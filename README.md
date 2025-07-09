@@ -54,13 +54,83 @@ Ein Platzhalter-Icon (logo.ico) ist im Repository enthalten.
 Du kannst es durch ein eigenes quadratisches .ico ersetzen.
 
 ## 📦 Abhängigkeiten
-Python 3.9+ (nur bei Nutzung des Quellcodes)
+📦 Abhängigkeiten & Installation
+Damit LDCertFix reibungslos funktioniert, müssen folgende Komponenten auf deinem System vorhanden sein:
 
-signtool.exe (aus Windows SDK)
+1. Python 3.9 oder neuer
+Nur erforderlich, wenn du das Tool aus dem Quellcode ausführst.
 
-PowerShell ≥ 5.1
+Download: https://www.python.org/downloads/
 
-Zertifikat mit privatem Schlüssel im Windows-Zertifikatsspeicher
+Hinweis: Während der Installation „Add Python to PATH“ aktivieren!
+
+Überprüfen:
+
+bash
+Kopieren
+Bearbeiten
+python --version
+2. signtool.exe (Bestandteil des Windows SDK)
+signtool.exe wird zum Signieren und Verifizieren von Dateien benötigt.
+
+Download Windows SDK: Windows SDK herunterladen
+
+Installation:
+Beim Setup reicht es, die Signing Tools for Desktop Apps auszuwählen.
+
+Pfad prüfen:
+
+text
+Kopieren
+Bearbeiten
+C:\Program Files (x86)\Windows Kits\10\bin\<SDK-Version>\x64\signtool.exe
+Tipp:
+Den Pfad zu signtool.exe kannst du optional in die Umgebungsvariable PATH aufnehmen.
+
+3. PowerShell ab Version 5.1
+Für einige Routinen und die Zertifikatsverwaltung wird PowerShell benötigt.
+
+Prüfen der Version:
+
+powershell
+Kopieren
+Bearbeiten
+$PSVersionTable.PSVersion
+Upgrade (falls nötig):
+PowerShell Download
+
+4. Zertifikat mit privatem Schlüssel im Windows-Zertifikatsspeicher
+Ein gültiges Code-Signing-Zertifikat mit privatem Schlüssel wird zum Signieren benötigt.
+
+Tipp: Zertifikate gibt es z. B. von Sectigo, DigiCert, GlobalSign.
+
+Import (Beispiel mit PowerShell):
+
+powershell
+Kopieren
+Bearbeiten
+Import-PfxCertificate -FilePath "C:\Pfad\zu\deinem.pfx" -CertStoreLocation Cert:\CurrentUser\My
+5. Weitere Python-Abhängigkeiten (bei Nutzung des Quellcodes)
+Installation:
+
+bash
+Kopieren
+Bearbeiten
+pip install -r requirements.txt
+oder für einzelne Pakete:
+
+bash
+Kopieren
+Bearbeiten
+pip install pywin32
+Hinweis:
+LDCertFix wurde bislang ausschließlich mit Code-Signing-Zertifikaten von Certum und dem dazugehörigen SimplySign Desktop getestet.
+Die Kompatibilität mit anderen Zertifikatsanbietern wie Sectigo, DigiCert oder GlobalSign sollte grundsätzlich gegeben sein, wurde jedoch bislang nicht verifiziert.
+
+Timestamp:
+Derzeit wird standardmäßig der Timestampserver
+http://timestamp.certum.pl
+verwendet. Der Server ist in den Einstellungen anpassbar.
 
 ## 📜 Lizenz
 Dieses Projekt steht unter der MIT-Lizenz – frei nutzbar, veränderbar und auch kommerziell einsetzbar.
