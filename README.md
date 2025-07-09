@@ -10,11 +10,11 @@ Es richtet sich an IT-Administratoren, Entwickler und DevOps-Teams, die signiert
 ## 🔧 Funktionen
 
 - ✅ Auswahl installierter Code-Signing-Zertifikate (Dropdown)
-- 🗃️ Unterstützung für `.ps1`, `.exe`, `.dll`, `.msi`, `.ocx`, `.js`, `.vbs`, `.wsf`
+- 🗃️ Unterstützung für .ps1, .exe, .dll, .msi, .ocx, .js, .vbs, .wsf
 - 🔏 Digitale Signatur mit Timestamp (konfigurierbarer Server)
 - 🔍 Einzeldateiprüfung
 - 📜 Ausführliches Log (Signieren & Prüfen)
-- 🛠️ Komponententest für `signtool`, Windows SDK, PowerShell-Version
+- 🛠️ Komponententest für signtool, Windows SDK, PowerShell-Version
 - 🖱️ Einfache, intuitive Bedienung
 - 📦 Portable, kein Setup erforderlich
 - 🌐 Sprachauswahl (DE, EN, PL, CZ)
@@ -23,9 +23,10 @@ Es richtet sich an IT-Administratoren, Entwickler und DevOps-Teams, die signiert
 
 ## 🚀 Verwendung
 
-1. Starte `LDCertFix.exe`  
+1. Starte LDCertFix.exe  
    Oder führe im Quellcode-Ordner aus:
-   ```bash
+   
+bash
    python main.py
 2. Zertifikat auswählen
 Im Dropdown erscheinen alle installierten Zertifikate mit privatem Schlüssel.
@@ -52,20 +53,57 @@ Keine Installation erforderlich – einfach starten.
 Ein Platzhalter-Icon (logo.ico) ist im Repository enthalten.
 Du kannst es durch ein eigenes quadratisches .ico ersetzen.
 
-## 📦 Abhängigkeiten
-Python 3.9+ (nur bei Nutzung des Quellcodes)
+### 📦 Abhängigkeiten & Installation
 
-signtool.exe (aus Windows SDK)
+Damit **LDCertFix** reibungslos funktioniert, müssen folgende Komponenten auf deinem System vorhanden sein:
 
-> Der Pfad zu ``signtool.exe`` muss entweder im ``PATH`` liegen oder 
-> über die Umgebungsvariable ``SIGNTOOL_EXE`` angegeben werden.
-> Installiere die passende Version des Windows SDK (32‑ oder 64‑Bit), 
-> damit das Tool die Signaturbefehle ausführen kann.
+**1. Python 3.9 oder neuer**  
+*(Nur erforderlich, wenn du das Tool aus dem Quellcode ausführst.)*
+- [Download Python](https://www.python.org/downloads/)
+- Während der Installation **„Add Python to PATH“** aktivieren!
+- Überprüfen:
+bash
+  python --version
+  
+**2. signtool.exe (Bestandteil des Windows SDK)**  
+- [Windows SDK herunterladen](https://developer.microsoft.com/de-de/windows/downloads/windows-sdk/)
+- Bei der Installation reichen die **Signing Tools for Desktop Apps**.
+- Prüfe den Pfad:
 
-PowerShell ≥ 5.1
+  C:\Program Files (x86)\Windows Kits\10\bin\<SDK-Version>\x64\signtool.exe
+  
+**3. PowerShell ab Version 5.1**
+- Prüfen:
+powershell
+  $PSVersionTable.PSVersion
+  
+- [PowerShell Download](https://learn.microsoft.com/de-de/powershell/scripting/install/installing-powershell)
 
-Zertifikat mit privatem Schlüssel im Windows-Zertifikatsspeicher
+**4. Zertifikat mit privatem Schlüssel im Windows-Zertifikatsspeicher**
+- Zertifikate z. B. von [Certum](https://www.certum.eu/de/), [Sectigo](https://sectigo.com/), [DigiCert](https://www.digicert.com/), [GlobalSign](https://www.globalsign.com/)
+- Import (Beispiel PowerShell):
+powershell
+  Import-PfxCertificate -FilePath "C:\Pfad\zu\deinem.pfx" -CertStoreLocation Cert:\CurrentUser\My
+  
+**5. Weitere Python-Abhängigkeiten (bei Quellcode-Nutzung)**
+- Installation:
+bash
+  pip install -r requirements.txt
+  
+oder einzeln:
+bash
+  pip install pywin32
+  
+> **Hinweis:**  
+> LDCertFix wurde bislang ausschließlich mit Code-Signing-Zertifikaten von **Certum** und dem dazugehörigen **SimplySign Desktop** getestet.  
+> Die Kompatibilität mit anderen Zertifikatsanbietern wie Sectigo, DigiCert oder GlobalSign sollte grundsätzlich gegeben sein, wurde jedoch bislang nicht verifiziert.
 
+> **Timestamp:**  
+> Derzeit wird standardmäßig der Timestampserver  
+> `http://timestamp.certum.pl`  
+> verwendet. Der Server ist in den Einstellungen anpassbar.
+
+---
 ## 📜 Lizenz
 Dieses Projekt steht unter der MIT-Lizenz – frei nutzbar, veränderbar und auch kommerziell einsetzbar.
 ➡️ Siehe LICENSE
@@ -81,8 +119,7 @@ Pull Requests, Verbesserungsvorschläge und Feedback sind jederzeit willkommen!
 ---
 
 ## 📄 LICENSE (MIT)
-
-```plaintext
+plaintext
 MIT License
 
 Copyright (c) 2025 Let's Do. – Inh. Peter Seidl
@@ -103,3 +140,4 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
