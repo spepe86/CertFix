@@ -1,3 +1,5 @@
+"""Entry point for the LDCertFix application."""
+
 from ldcertfix.gui import run
 
 

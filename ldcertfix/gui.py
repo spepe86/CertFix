@@ -1,15 +1,20 @@
+"""Tkinter-based user interface for LDCertFix."""
+
 import os
 from pathlib import Path
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 
 from . import signing
 from .logging_config import setup_logging
+from .translations import TRANSLATIONS, LANGUAGES
+from .config import load_config, save_config
 
 SUPPORTED_EXTS = {'.ps1', '.exe', '.dll', '.msi', '.ocx', '.js', '.vbs', '.wsf'}
 
 
 class MainWindow(tk.Tk):
+    """Main application window containing all controls."""
     def __init__(self):
         super().__init__()
         self.title('LDCertFix')
@@ -21,38 +26,58 @@ class MainWindow(tk.Tk):
         if 'clam' in self.style.theme_names():
             self.style.theme_use('clam')
 
+        cfg = load_config()
+        self.lang = cfg.get('language', 'DE')
+        if self.lang not in LANGUAGES:
+            self.lang = 'DE'
+        self.tr = TRANSLATIONS[self.lang]
+
         self.cert_var = tk.StringVar()
+        self.lang_var = tk.StringVar(value=self.lang)
+
         self._build_widgets()
         self.refresh_certs()
         # start with empty list; user can add files manually
 
-    def _set_app_icon(self):
-        """Attempt to set window icon from 'logo.ico'."""
+    def _apply_icon(self, window):
+        """Attempt to set icon from 'logo.ico' for the given window."""
         icon_path = Path(__file__).resolve().parent.parent / 'logo.ico'
         try:
-            self.iconbitmap(default=str(icon_path))
+            window.iconbitmap(default=str(icon_path))
         except Exception:
-            # Ignore missing or invalid icon files
             pass
+
+    def _set_app_icon(self):
+        self._apply_icon(self)
 
     def _build_widgets(self):
         top = ttk.Frame(self)
         top.pack(fill=tk.X, padx=5, pady=5)
 
-        ttk.Label(top, text='Zertifikat:').pack(side=tk.LEFT)
+        self.cert_label = ttk.Label(top, text=self.tr['certificate'])
+        self.cert_label.pack(side=tk.LEFT)
         self.cert_combo = ttk.Combobox(top, textvariable=self.cert_var, width=50)
         self.cert_combo.pack(side=tk.LEFT, padx=5)
+
+        self.lang_label = ttk.Label(top, text=self.tr['language_label'])
+        self.lang_label.pack(side=tk.LEFT, padx=(10, 0))
+        self.lang_combo = ttk.Combobox(top, textvariable=self.lang_var, values=LANGUAGES, width=5, state='readonly')
+        self.lang_combo.pack(side=tk.LEFT)
+        self.lang_combo.bind('<<ComboboxSelected>>', self.change_language)
 
         btn_frame = ttk.Frame(self)
         btn_frame.pack(fill=tk.X, padx=5, pady=5)
 
-        ttk.Button(btn_frame, text='➕ Dateien hinzufügen', command=self.add_files).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text='➖ Entfernen', command=self.remove_selected).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text='🔏 Signieren', command=self.sign_selected).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text='🧪 Alle prüfen', command=self.verify_all).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text='📂 Datei prüfen', command=self.verify_single).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text='📄 Log anzeigen', command=self.show_log).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text='ℹ️ Info', command=self.show_info).pack(side=tk.LEFT, padx=2)
+        self._buttons = [
+            (ttk.Button(btn_frame, text=self.tr['add_files'], command=self.add_files), 'add_files'),
+            (ttk.Button(btn_frame, text=self.tr['remove'], command=self.remove_selected), 'remove'),
+            (ttk.Button(btn_frame, text=self.tr['sign'], command=self.sign_selected), 'sign'),
+            (ttk.Button(btn_frame, text=self.tr['verify_single'], command=self.verify_single), 'verify_single'),
+            (ttk.Button(btn_frame, text=self.tr['show_log'], command=self.show_log), 'show_log'),
+            (ttk.Button(btn_frame, text=self.tr['info'], command=self.show_info), 'info'),
+        ]
+        for btn, _ in self._buttons:
+            btn.pack(side=tk.LEFT, padx=2)
 
         self.tree = ttk.Treeview(
             self,
@@ -60,9 +85,9 @@ class MainWindow(tk.Tk):
             show='headings',
             selectmode='extended'
         )
-        self.tree.heading('path', text='Datei')
-        self.tree.heading('type', text='Typ')
-        self.tree.heading('status', text='Status')
+        self.tree.heading('path', text=self.tr['file'])
+        self.tree.heading('type', text=self.tr['type'])
+        self.tree.heading('status', text=self.tr['status'])
         self.tree.column('path', width=300)
         self.tree.column('type', width=60, anchor='center')
         self.tree.column('status', width=100, anchor='center')
@@ -99,6 +124,24 @@ class MainWindow(tk.Tk):
         for item in self.tree.selection():
             self.tree.delete(item)
 
+    def change_language(self, *_):
+        sel = self.lang_var.get()
+        if sel not in LANGUAGES:
+            return
+        self.lang = sel
+        self.tr = TRANSLATIONS[self.lang]
+        self.update_language()
+        save_config({'language': self.lang})
+
+    def update_language(self):
+        self.cert_label.configure(text=self.tr['certificate'])
+        self.lang_label.configure(text=self.tr['language_label'])
+        for idx, (btn, key) in enumerate(self._buttons):
+            btn.configure(text=self.tr[key])
+        self.tree.heading('path', text=self.tr['file'])
+        self.tree.heading('type', text=self.tr['type'])
+        self.tree.heading('status', text=self.tr['status'])
+
     def selected_thumbprint(self):
         name = self.cert_var.get()
         return self._cert_map.get(name)
@@ -106,25 +149,26 @@ class MainWindow(tk.Tk):
     def sign_selected(self):
         thumb = self.selected_thumbprint()
         if not thumb:
-            messagebox.showerror('Fehler', 'Kein Zertifikat ausgewählt')
+            messagebox.showerror(self.tr['error_title'], self.tr['error_no_cert'])
             return
-        for item in self.tree.selection() or self.tree.get_children():
+        items = self.tree.selection() or self.tree.get_children()
+        if not items:
+            messagebox.showwarning(
+                self.tr['error_title'],
+                self.tr.get('error_no_files', 'Keine Dateien ausgewählt')
+            )
+            return
+        messages = []
+        for item in items:
             path = Path(item)
             result = signing.sign_file(path, thumb)
             self.logger.info('Sign %s: %s', path, result.strip())
             self.tree.set(item, 'status', 'signed')
-
-    def verify_all(self):
-        messages = []
-        for item in self.tree.get_children():
-            path = Path(item)
-            result = signing.verify_file(path)
-            self.logger.info('Verify %s: %s', path, result.strip())
-            self.tree.set(item, 'status', 'checked')
-            msg = f"{path.name}: {result.strip() or 'Keine Ausgabe'}"
-            messages.append(msg)
-        if messages:
-            messagebox.showinfo('Alle prüfen', "\n\n".join(messages))
+            messages.append(f"{path.name}: {result.strip() or self.tr['no_output']}")
+        messagebox.showinfo(
+            self.tr.get('sign_title', self.tr['sign']),
+            "\n\n".join(messages)
+        )
 
     def verify_single(self):
         filename = filedialog.askopenfilename()
@@ -132,34 +176,44 @@ class MainWindow(tk.Tk):
             return
         path = Path(filename)
         result = signing.verify_file(path)
-        messagebox.showinfo('Verifikation', result or 'Keine Ausgabe')
+        messagebox.showinfo(self.tr['verification_title'], result or self.tr['no_output'])
         self.logger.info('Verify %s: %s', path, result.strip())
 
     def show_log(self):
         log_window = tk.Toplevel(self)
-        log_window.title('Log')
+        log_window.title(self.tr['log_title'])
+        self._apply_icon(log_window)
         text = tk.Text(log_window, wrap='none')
         text.pack(fill=tk.BOTH, expand=True)
         try:
             with open('ldcertfix.log', 'r', encoding='utf-8') as f:
                 text.insert('1.0', f.read())
         except FileNotFoundError:
-            text.insert('1.0', 'Kein Log gefunden')
+            text.insert('1.0', self.tr['no_log'])
 
     def show_info(self):
-        info = (
-            "LDCertFix\n\n"
-            "Benötigte Komponenten:\n"
-            "\u2022 Python 3.9 oder neuer\n"
-            "\u2022 signtool.exe aus dem Windows SDK\n"
-            "\u2022 PowerShell ab Version 5\n"
-            "\u2022 Optional: PyInstaller f\u00fcr eine eigene EXE\n\n"
-            "\u00a9 2024 Let's Do. – Inh. Peter Seidl\n"
-            "Alle Rechte vorbehalten."
-        )
-        messagebox.showinfo('Informationen', info)
+        win = tk.Toplevel(self)
+        win.title(self.tr['info_title'])
+        self._apply_icon(win)
+
+        frame = ttk.Frame(win)
+        frame.pack(padx=10, pady=10)
+
+        icon_path = Path(__file__).resolve().parent.parent / 'logo.ico'
+        try:
+            img = tk.PhotoImage(file=str(icon_path))
+        except Exception:
+            img = None
+        if img:
+            icon_label = ttk.Label(frame, image=img)
+            icon_label.image = img
+            icon_label.pack(side=tk.LEFT, padx=(0, 10))
+
+        msg = ttk.Label(frame, text=self.tr['info_text'], justify='left')
+        msg.pack(side=tk.LEFT)
 
 
-def run():
+def run() -> None:
+    """Launch the GUI application."""
     app = MainWindow()
     app.mainloop()
