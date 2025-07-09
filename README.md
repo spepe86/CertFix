@@ -53,7 +53,7 @@ Keine Installation erforderlich – einfach starten.
 Ein Platzhalter-Icon (logo.ico) ist im Repository enthalten.
 Du kannst es durch ein eigenes quadratisches .ico ersetzen.
 
-### 📦 Abhängigkeiten & Installation
+## 📦 Abhängigkeiten & Installation
 
 Damit **LDCertFix** reibungslos funktioniert, müssen folgende Komponenten auf deinem System vorhanden sein:
 
