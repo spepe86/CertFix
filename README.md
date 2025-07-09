@@ -454,3 +454,159 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
+
+# LDCertFix
+
+**LDCertFix** je lehký, přenosný nástroj pro Windows k digitálnímu podepisování a ověřování souborů pomocí stávajících certifikátů pro podepisování kódu.  
+Je určen pro IT administrátory, vývojáře a DevOps týmy, které potřebují distribuovat podepsané PowerShell skripty, EXE soubory nebo instalační balíčky.
+
+> 🛡️ Podepiš. 🔎 Ověř. 📋 Protokoluj. — Rychle a přehledně.
+
+---
+
+## 🔧 Funkce
+
+- ✅ Výběr nainstalovaných certifikátů pro podepisování kódu (rozbalovací nabídka)
+- 🗃️ Podpora pro `.ps1`, `.exe`, `.dll`, `.msi`, `.ocx`, `.js`, `.vbs`, `.wsf`
+- 🔏 Digitální podpis s časovým razítkem (nastavitelný server)
+- 🔍 Ověření jednotlivých souborů
+- 📜 Podrobný log (podepisování a ověřování)
+- 🛠️ Kontrola komponent (`signtool`, Windows SDK, verze PowerShell)
+- 🖱️ Jednoduché, intuitivní ovládání
+- 📦 Přenosná aplikace, není nutná instalace
+- 🌐 Volba jazyka (CZ, DE, EN, PL)
+
+---
+
+## 🚀 Použití
+
+1. Spusť `LDCertFix.exe`  
+   Nebo spusť ze složky se zdrojovým kódem:
+   ```bash
+   python main.py
+   ```
+
+2. Vyber certifikát  
+   Zobrazí se všechny nainstalované certifikáty s privátním klíčem.
+
+3. Přidej soubory  
+   Podporované soubory lze přidat výběrem nebo přetažením.
+
+4. Podepiš nebo ověř  
+   Podepsání přidá digitální podpis s časovým razítkem.  
+   Ověření zkontroluje jednotlivé soubory a zobrazí výsledek.
+
+5. Zobrazit log  
+   Ukazuje úplný záznam všech akcí včetně stavu podpisu a informací o certifikátu.
+
+6. Informační okno  
+   Zobrazuje informace o komponentách (např. signtool, SDK verze) a ikonu programu.
+
+---
+
+## 📁 Vydání
+
+V adresáři `/release` se nachází předkompilovaná, digitálně podepsaná verze `.exe`.  
+Instalace není nutná – stačí spustit.
+
+## 🖼️ Logo
+
+Součástí je zástupné logo (`logo.ico`) – můžeš ho nahradit vlastním čtvercovým `.ico`.
+
+---
+
+### 📦 Požadavky
+
+Aby **LDCertFix** správně fungoval, musí být v systému dostupné následující komponenty:
+
+**1. Python 3.9 nebo novější**  
+*(Pouze při spouštění ze zdrojového kódu)*  
+- [Stáhnout Python](https://www.python.org/downloads/)  
+- Během instalace zaškrtněte **„Add Python to PATH“**  
+- Ověření:
+  ```bash
+  python --version
+  ```
+
+**2. signtool.exe (součást Windows SDK)**  
+- [Stáhnout Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)  
+- Při instalaci stačí vybrat „Signing Tools for Desktop Apps“  
+- Cesta:
+  ```
+  C:\Program Files (x86)\Windows Kits\10\bin\<SDK-Verze>\x64\signtool.exe
+  ```
+
+**3. PowerShell 5.1 nebo novější**  
+- Ověření:
+  ```powershell
+  $PSVersionTable.PSVersion
+  ```  
+- [Stáhnout PowerShell](https://learn.microsoft.com/cs-cz/powershell/scripting/install/installing-powershell)
+
+**4. Certifikát s privátním klíčem ve Windows Certificate Store**  
+- Import (PowerShell příklad):
+  ```powershell
+  Import-PfxCertificate -FilePath "C:\Cesta\k\tvemu.pfx" -CertStoreLocation Cert:\CurrentUser\My
+  ```
+
+**5. Python knihovny (pro použití ze zdrojového kódu)**  
+- Instalace:
+  ```bash
+  pip install -r requirements.txt
+  ```
+  nebo jednotlivě:
+  ```bash
+  pip install pywin32
+  ```
+
+> **Poznámka:**  
+> LDCertFix byl testován převážně s certifikáty od **Certum** a aplikací **SimplySign Desktop**.  
+> Kompatibilita s jinými poskytovateli (např. Sectigo, DigiCert, GlobalSign) by měla být obecně zajištěna, ale nebyla zatím ověřena.
+
+> **Timestamp:**  
+> Výchozí timestamp server:  
+> `http://timestamp.certum.pl`  
+> Lze změnit v nastavení.
+
+---
+
+## 📜 Licence
+
+Projekt je licencován pod MIT licencí – volně použitelný, upravitelný a použitelný i komerčně.  
+➡️ Viz LICENSE
+
+## 👤 Autor
+
+© 2024–2025 Let's Do. – Autor: Peter Seidl  
+Kontakt: pseidl@lets-do.media
+
+## ❤️ Přispěj
+
+Pull requesty, návrhy a zpětná vazba jsou vítány!
+
+---
+
+## 📄 LICENCE (MIT)
+
+```
+MIT License
+
+Copyright (c) 2025 Let's Do. – Inh. Peter Seidl
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
