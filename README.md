@@ -119,7 +119,8 @@ Pull Requests, Verbesserungsvorschläge und Feedback sind jederzeit willkommen!
 ---
 
 ## 📄 LICENSE (MIT)
-plaintext
+
+```
 MIT License
 
 Copyright (c) 2025 Let's Do. – Inh. Peter Seidl
@@ -140,6 +141,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
 
 # LDCertFix
 
@@ -274,6 +276,161 @@ Pull requests, improvements, and feedback are always welcome!
 ---
 
 ## 📄 LICENSE (MIT)
+
+```
+MIT License
+
+Copyright (c) 2025 Let's Do. – Inh. Peter Seidl
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+# LDCertFix
+
+**LDCertFix** to lekkie, przenośne narzędzie Windows do podpisywania cyfrowego i weryfikacji plików za pomocą istniejących certyfikatów Code Signing.  
+Skierowane do administratorów IT, programistów i zespołów DevOps, którzy potrzebują podpisanych skryptów PowerShell, plików EXE lub pakietów instalacyjnych.
+
+> 🛡️ Podpisuj. 🔎 Weryfikuj. 📋 Loguj. — Szybko i przejrzyście.
+
+---
+
+## 🔧 Funkcje
+
+- ✅ Wybór zainstalowanych certyfikatów Code Signing (lista rozwijana)
+- 🗃️ Obsługa plików `.ps1`, `.exe`, `.dll`, `.msi`, `.ocx`, `.js`, `.vbs`, `.wsf`
+- 🔏 Podpis cyfrowy z timestampem (konfigurowalny serwer)
+- 🔍 Weryfikacja pojedynczego pliku
+- 📜 Szczegółowy log (podpisywanie i weryfikacja)
+- 🛠️ Test komponentów (`signtool`, Windows SDK, wersja PowerShell)
+- 🖱️ Intuicyjny, prosty interfejs
+- 📦 Przenośne, bez instalacji
+- 🌐 Wybór języka (PL, DE, EN, CZ)
+
+---
+
+## 🚀 Użytkowanie
+
+1. Uruchom `LDCertFix.exe`  
+   lub z katalogu źródłowego:
+   ```bash
+   python main.py
+   ```
+
+2. Wybierz certyfikat  
+   Wszystkie zainstalowane certyfikaty z kluczem prywatnym będą widoczne na liście.
+
+3. Dodaj pliki  
+   Obsługiwane pliki można dodać przez wybór lub przeciągnij i upuść.
+
+4. Podpisz lub zweryfikuj  
+   Podpisuje pliki z użyciem cyfrowego podpisu i timestampu.  
+   Weryfikacja sprawdza pojedyncze pliki.
+
+5. Zobacz log  
+   Pokazuje wszystkie wykonane operacje wraz ze statusem podpisu i danymi certyfikatu.
+
+6. Informacje  
+   Pokazuje status komponentów (np. signtool, SDK) i ikonę programu.
+
+---
+
+## 📁 Wersja gotowa
+
+W folderze `/release` znajduje się skompilowana, podpisana wersja `.exe`.  
+Nie wymaga instalacji – wystarczy uruchomić.
+
+## 🖼️ Logo
+
+Dołączony jest plik `logo.ico` – możesz go zastąpić własnym kwadratowym `.ico`.
+
+---
+
+### 📦 Wymagania
+
+Aby **LDCertFix** działał poprawnie, na systemie muszą być obecne:
+
+**1. Python 3.9 lub nowszy**  
+*(Tylko przy uruchamianiu z kodu źródłowego)*  
+- [Pobierz Pythona](https://www.python.org/downloads/)  
+- Zaznacz „Add Python to PATH”  
+- Sprawdź instalację:
+  ```bash
+  python --version
+  ```
+
+**2. signtool.exe (część Windows SDK)**  
+- [Pobierz Windows SDK](https://developer.microsoft.com/pl-pl/windows/downloads/windows-sdk/)  
+- Wystarczy „Signing Tools for Desktop Apps”  
+- Ścieżka:
+  ```
+  C:\Program Files (x86)\Windows Kits\10\bin\<SDK-Version>\x64\signtool.exe
+  ```
+
+**3. PowerShell 5.1 lub nowszy**  
+- Sprawdź:
+  ```powershell
+  $PSVersionTable.PSVersion
+  ```  
+- [Pobierz PowerShell](https://learn.microsoft.com/pl-pl/powershell/scripting/install/installing-powershell)
+
+**4. Certyfikat z kluczem prywatnym w magazynie certyfikatów Windows**  
+- Import przykładowy (PowerShell):
+  ```powershell
+  Import-PfxCertificate -FilePath "C:\Ścieżka\do\twojego.pfx" -CertStoreLocation Cert:\CurrentUser\My
+  ```
+
+**5. Biblioteki Pythona (przy wersji źródłowej)**  
+- Instalacja:
+  ```bash
+  pip install -r requirements.txt
+  ```
+  lub:
+  ```bash
+  pip install pywin32
+  ```
+
+> **Uwaga:**  
+> LDCertFix był testowany głównie z certyfikatami **Certum** i aplikacją **SimplySign Desktop**.  
+> Kompatybilność z innymi dostawcami (Sectigo, DigiCert, GlobalSign) powinna być możliwa, ale nie została przetestowana.
+
+> **Timestamp:**  
+> Domyślny serwer timestamp:  
+> `http://timestamp.certum.pl`  
+> Możliwy do zmiany w ustawieniach.
+
+---
+
+## 📜 Licencja
+
+Projekt na licencji MIT – darmowy, możliwy do modyfikacji i użycia komercyjnego.  
+➡️ Zobacz LICENSE
+
+## 👤 Autor
+
+© 2024–2025 Let's Do. – Właściciel: Peter Seidl  
+Kontakt: pseidl@lets-do.media
+
+## ❤️ Współpraca
+
+Pull requesty, sugestie i opinie mile widziane!
+
+---
+
+## 📄 LICENCJA (MIT)
 
 ```
 MIT License
